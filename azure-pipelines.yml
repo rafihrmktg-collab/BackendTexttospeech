@@ -8,7 +8,6 @@ variables:
   JAR_NAME: 'tts-backend-1.0.0.jar'
 
 steps:
-- task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     goals: 'clean package'
@@ -17,13 +16,21 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
 
-- task: CopyFiles@2
   inputs:
     contents: 'target/$(JAR_NAME)'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
 
-- task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
+# Deployment steps (example for VM)
+#- task: AzureWebApp@1
+#  inputs:
+#    azureSubscription: '<your-azure-subscription>'
+#    appName: '<your-app-service-name>'
+#    package: '$(Build.ArtifactStagingDirectory)/$(JAR_NAME)'
+
+# For VM deployment, use Azure CLI or SSH tasks to copy and run the JAR
+# Add secrets/credentials securely in Azure DevOps Pipeline Library
